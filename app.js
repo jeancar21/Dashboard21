@@ -59,15 +59,6 @@ const WIDGET_CATALOG = [
         note: 'Próximamente',
     },
     {
-        id: 'stocks',
-        name: 'Bolsa de Valores',
-        desc: 'Cotizaciones (CAT, Tech, Alzas/Bajas)',
-        icon: '📈',
-        available: true,
-        fetch: fetchStocks,
-        html: getStocksHTML,
-    },
-    {
         id: 'finance-search',
         name: 'Explorador Financiero',
         desc: 'Buscador de acciones y gráficos (Google Finance Style)',
@@ -80,13 +71,6 @@ const WIDGET_CATALOG = [
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', async () => {
-    // Force stocks widget to show if it was accidentally removed
-    let rm = JSON.parse(localStorage.getItem('removed-widgets') || '[]');
-    if (rm.includes('widget-stocks')) {
-        rm = rm.filter(id => id !== 'widget-stocks');
-        localStorage.setItem('removed-widgets', JSON.stringify(rm));
-    }
-
     initClock();
     setupRefreshButton();
     await loadAllWidgets();
@@ -106,7 +90,6 @@ async function loadAllWidgets() {
         fetchCryptoNews(),
         fetchGlobalMarket(),
         fetchAllSports(),
-        fetchStocks(),
         fetchFinanceSearch(),
     ]);
     updateLastRefreshTime();
@@ -125,7 +108,6 @@ function setupAutoRefresh() {
     setInterval(() => fetchCryptoNews(), REFRESH_INTERVALS.news);
     setInterval(() => fetchGlobalMarket(), REFRESH_INTERVALS.global);
     setInterval(() => fetchAllSports(), REFRESH_INTERVALS.sports);
-    setInterval(() => fetchStocks(), 3_600_000); // TradingView updates itself, we only re-init every hour
 }
 
 function setupRefreshButton() {

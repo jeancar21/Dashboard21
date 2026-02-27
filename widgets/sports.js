@@ -47,13 +47,11 @@ async function fetchTeamDataV6(teamKey) {
         // Fetch from multiple competitions (League + Cup/Libertadores)
         const fetchPromises = cfg.leagues.map(async (league) => {
             const baseUrl = `https://site.api.espn.com/apis/site/v2/sports/${league}/scoreboard?dates=${dateRange}&limit=100`;
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(baseUrl)}&_cb=${Date.now()}`;
 
-            const res = await fetch(proxyUrl);
+            const res = await fetch(baseUrl);
             if (!res.ok) return [];
             const data = await res.json();
-            const contents = JSON.parse(data.contents);
-            return contents.events || [];
+            return data.events || [];
         });
 
         const results = await Promise.all(fetchPromises);

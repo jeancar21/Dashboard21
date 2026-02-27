@@ -44,16 +44,57 @@
     <!-- ═══════════════════════════════════════════════ MAIN ══ -->
     <main class="dashboard-grid" id="dashboard-grid">
 
-        <!-- ── WIDGET: Reloj & Fecha ── -->
+        <!-- ── WIDGET: Reloj & Fecha Dual ── -->
         <div class="widget widget-clock" data-widget="clock" id="widget-clock">
             <div class="widget-header">
                 <span class="widget-icon">🕐</span>
-                <span class="widget-title">Fecha & Hora</span>
+                <span class="widget-title">Fecha & Hora Mundial</span>
+                <button class="btn-icon" onclick="toggleClockSearch()" title="Configurar ciudades"
+                    style="margin-left:auto; background:var(--bg-glass); border:1px solid var(--border); color:var(--text-primary); border-radius:var(--radius-sm); padding:4px 8px; cursor:pointer; font-size:12px;">⚙️</button>
             </div>
-            <div class="clock-display">
-                <div class="clock-time" id="clock-time">--:--:--</div>
-                <div class="clock-date" id="clock-date">--</div>
-                <div class="clock-tz" id="clock-tz">Europa/Madrid</div>
+
+            <div id="dual-clock-display"
+                style="display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:center; padding-top:4px;">
+                <!-- City 1 -->
+                <div class="clock-panel"
+                    style="background:var(--bg-glass); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 6px; cursor:pointer; transition:var(--transition);"
+                    onclick="openClockSearch(1)" onmouseover="this.style.borderColor='var(--accent-blue)'"
+                    onmouseout="if(clockState.activeSearchIdx !== 1) this.style.borderColor='var(--border)'">
+                    <div class="clock-tz" id="clock-tz-1"
+                        style="color:var(--text-secondary); font-size:12px; font-weight:600; margin-bottom:6px; margin-top:0;">
+                        Local</div>
+                    <div class="clock-time" id="clock-time-1" style="font-size:26px; line-height:1.1;">--:--:--</div>
+                    <div class="clock-date" id="clock-date-1"
+                        style="font-size:11px; margin-top:6px; color:var(--text-muted);">--</div>
+                </div>
+                <!-- City 2 -->
+                <div class="clock-panel"
+                    style="background:var(--bg-glass); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 6px; cursor:pointer; transition:var(--transition);"
+                    onclick="openClockSearch(2)" onmouseover="this.style.borderColor='var(--accent-blue)'"
+                    onmouseout="if(clockState.activeSearchIdx !== 2) this.style.borderColor='var(--border)'">
+                    <div class="clock-tz" id="clock-tz-2"
+                        style="color:var(--text-secondary); font-size:12px; font-weight:600; margin-bottom:6px; margin-top:0;">
+                        Nueva York</div>
+                    <div class="clock-time" id="clock-time-2" style="font-size:26px; line-height:1.1;">--:--:--</div>
+                    <div class="clock-date" id="clock-date-2"
+                        style="font-size:11px; margin-top:6px; color:var(--text-muted);">--</div>
+                </div>
+            </div>
+
+            <div id="clock-search-area"
+                style="display:none; margin-top:12px; background:var(--bg-surface); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span id="clock-search-title"
+                        style="font-size:12px; font-weight:600; color:var(--text-secondary);">Elegir Ciudad:</span>
+                    <button onclick="closeClockSearch()"
+                        style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;">✕</button>
+                </div>
+                <input type="text" id="clock-search-input" placeholder="Buscar ciudad o país..."
+                    oninput="filterClockCities()"
+                    style="width:100%; background:var(--bg-base); border:1px solid var(--border); border-radius:4px; padding:8px; color:var(--text-primary); outline:none; font-family:var(--font-main); font-size:12px; margin-bottom:8px;">
+                <div id="clock-search-results"
+                    style="max-height:130px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; text-align:left;">
+                </div>
             </div>
         </div>
 

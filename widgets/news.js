@@ -6,7 +6,7 @@
 async function fetchCryptoNews() {
     // Use rss2json to fetch CryptoPanic RSS (free tier)
     const RSS_URL = encodeURIComponent('https://cryptopanic.com/news/rss/');
-    const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&api_key=public&count=8`;
+    const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=8`;
 
     try {
         const res = await fetch(API_URL);
@@ -26,7 +26,7 @@ async function fetchCryptoNews() {
 async function fetchNewsFromFallback() {
     try {
         const RSS_URL = encodeURIComponent('https://cointelegraph.com/rss');
-        const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&api_key=public&count=8`;
+        const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=8`;
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();

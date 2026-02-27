@@ -22,14 +22,16 @@ async function fetchP2P(fiat, tradeType) {
         tradeType: tradeType, // 'BUY' | 'SELL'
     };
 
-    // Use a CORS proxy since the Binance P2P API blocks direct browser requests
+    // Use corsproxy.io since Binance P2P API blocks direct browser requests
     const BINANCE_P2P_URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(BINANCE_P2P_URL);
 
     try {
-        const res = await fetch(BINANCE_P2P_URL, {
+        const res = await fetch(proxyUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-requested-with': 'XMLHttpRequest'
             },
             body: JSON.stringify(payload),
         });
@@ -37,32 +39,8 @@ async function fetchP2P(fiat, tradeType) {
         const data = await res.json();
         return data.data || [];
     } catch (err) {
-        // Fallback: try allorigins CORS proxy
-        try {
-            const target = encodeURIComponent(BINANCE_P2P_URL);
-            const proxyUrl = `https://api.allorigins.win/raw?url=${target}`;
-            const proxyRes = await fetch(proxyUrl, {
-                method: 'GET', // allorigins only supports GET, so we embed body differently
-            });
-            // allorigins doesn't support POST, so we use another approach
-            throw new Error('proxy_no_post');
-        } catch {
-            // Try cors.sh or similar
-            try {
-                const corsProxy = 'https://corsproxy.io/?';
-                const res2 = await fetch(corsProxy + encodeURIComponent(BINANCE_P2P_URL), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-requested-with': 'XMLHttpRequest' },
-                    body: JSON.stringify(payload),
-                });
-                if (!res2.ok) throw new Error(`Proxy HTTP ${res2.status}`);
-                const data2 = await res2.json();
-                return data2.data || [];
-            } catch (err2) {
-                console.error('[P2P]', fiat, tradeType, err2);
-                return null; // null = error state
-            }
-        }
+        console.error('[P2P]', fiat, tradeType, err);
+        return null;
     }
 }
 

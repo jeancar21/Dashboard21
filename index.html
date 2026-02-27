@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Dashboard</title>
+    <meta name="description" content="Dashboard personal con Binance P2P, crypto precios, clima y más." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- ═══════════════════════════════════════════════ HEADER ══ -->
+    <header class="dashboard-header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">MyDash</span>
+            </div>
+            <div class="header-time" id="header-clock"></div>
+        </div>
+        <div class="header-right">
+            <div class="last-update-badge">
+                <span class="pulse-dot"></span>
+                <span id="last-update-text">Actualizando...</span>
+            </div>
+            <button class="btn-refresh" id="btn-refresh" title="Actualizar todo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Refresh
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════ MAIN ══ -->
+    <main class="dashboard-grid" id="dashboard-grid">
+
+        <!-- ── WIDGET: Reloj & Fecha ── -->
+        <div class="widget widget-clock" data-widget="clock" id="widget-clock">
+            <div class="widget-header">
+                <span class="widget-icon">🕐</span>
+                <span class="widget-title">Fecha & Hora</span>
+            </div>
+            <div class="clock-display">
+                <div class="clock-time" id="clock-time">--:--:--</div>
+                <div class="clock-date" id="clock-date">--</div>
+                <div class="clock-tz" id="clock-tz">Europa/Madrid</div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Clima Rubí, Barcelona ── -->
+        <div class="widget widget-weather" data-widget="weather" id="widget-weather">
+            <div class="widget-header">
+                <span class="widget-icon">🌤</span>
+                <span class="widget-title">Clima — Rubí, Barcelona</span>
+                <span class="widget-badge" id="weather-badge">Cargando...</span>
+            </div>
+            <div class="weather-content" id="weather-content">
+                <div class="weather-main">
+                    <div class="weather-icon-big" id="weather-icon">⏳</div>
+                    <div class="weather-temp-block">
+                        <div class="weather-temp" id="weather-temp">--°</div>
+                        <div class="weather-feels" id="weather-feels">Sensación: --°</div>
+                        <div class="weather-desc" id="weather-desc">--</div>
+                    </div>
+                </div>
+                <div class="weather-stats">
+                    <div class="weather-stat">
+                        <span class="stat-label">💧 Humedad</span>
+                        <span class="stat-value" id="weather-humidity">--%</span>
+                    </div>
+                    <div class="weather-stat">
+                        <span class="stat-label">🌬 Viento</span>
+                        <span class="stat-value" id="weather-wind">-- km/h</span>
+                    </div>
+                    <div class="weather-stat">
+                        <span class="stat-label">⬆ Máx</span>
+                        <span class="stat-value" id="weather-max">--°</span>
+                    </div>
+                    <div class="weather-stat">
+                        <span class="stat-label">⬇ Mín</span>
+                        <span class="stat-value" id="weather-min">--°</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Crypto Precios ── -->
+        <div class="widget widget-crypto" data-widget="crypto" id="widget-crypto">
+            <div class="widget-header">
+                <span class="widget-icon">📈</span>
+                <span class="widget-title">Crypto Precios</span>
+                <span class="widget-badge blink" id="crypto-badge">Live</span>
+            </div>
+            <div class="crypto-list" id="crypto-list">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Binance P2P — PEN (Soles) ── -->
+        <div class="widget widget-p2p widget-p2p-pen" data-widget="p2p-pen" id="widget-p2p-pen">
+            <div class="widget-header">
+                <span class="widget-icon">🇵🇪</span>
+                <span class="widget-title">Binance P2P — USDT/PEN</span>
+                <span class="widget-badge badge-binance blink">P2P</span>
+            </div>
+            <div class="p2p-tabs">
+                <button class="tab-btn active" data-tab="buy-pen" onclick="switchP2PTab('pen','buy')">Comprar
+                    USDT</button>
+                <button class="tab-btn" data-tab="sell-pen" onclick="switchP2PTab('pen','sell')">Vender USDT</button>
+            </div>
+            <div class="p2p-content" id="p2p-pen-content">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+            <div class="p2p-last-update">
+                <span id="p2p-pen-update">--</span>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Binance P2P — EUR ── -->
+        <div class="widget widget-p2p widget-p2p-eur" data-widget="p2p-eur" id="widget-p2p-eur">
+            <div class="widget-header">
+                <span class="widget-icon">🇪🇺</span>
+                <span class="widget-title">Binance P2P — USDT/EUR</span>
+                <span class="widget-badge badge-binance blink">P2P</span>
+            </div>
+            <div class="p2p-tabs">
+                <button class="tab-btn active" data-tab="buy-eur" onclick="switchP2PTab('eur','buy')">Comprar
+                    USDT</button>
+                <button class="tab-btn" data-tab="sell-eur" onclick="switchP2PTab('eur','sell')">Vender USDT</button>
+            </div>
+            <div class="p2p-content" id="p2p-eur-content">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+            <div class="p2p-last-update">
+                <span id="p2p-eur-update">--</span>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Tipos de Cambio ── -->
+        <div class="widget widget-exchange" data-widget="exchange" id="widget-exchange">
+            <div class="widget-header">
+                <span class="widget-icon">💱</span>
+                <span class="widget-title">Tipos de Cambio</span>
+                <span class="widget-badge" id="exchange-badge">USD Base</span>
+            </div>
+            <div class="exchange-list" id="exchange-list">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Noticias Crypto ── -->
+        <div class="widget widget-news" data-widget="news" id="widget-news">
+            <div class="widget-header">
+                <span class="widget-icon">📰</span>
+                <span class="widget-title">Noticias Crypto</span>
+                <span class="widget-badge" id="news-badge">RSS</span>
+            </div>
+            <div class="news-list" id="news-list">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Dominancia BTC ── -->
+        <div class="widget widget-dominance" data-widget="dominance" id="widget-dominance">
+            <div class="widget-header">
+                <span class="widget-icon">🌐</span>
+                <span class="widget-title">Mercado Global</span>
+                <span class="widget-badge" id="dominance-badge">CoinGecko</span>
+            </div>
+            <div class="dominance-content" id="dominance-content">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: FC Barcelona ── -->
+        <div class="widget widget-sports widget-sports-barca" data-widget="sports-barcelona"
+            id="widget-sports-barcelona">
+            <div class="widget-header">
+                <span class="widget-icon">🔵🔴</span>
+                <span class="widget-title">FC Barcelona</span>
+                <span class="widget-badge badge-barca">La Liga</span>
+            </div>
+            <div class="p2p-tabs">
+                <button class="tab-btn active" data-sports-tab="barcelona-next"
+                    onclick="switchSportsTab('barcelona','next')">Próximos</button>
+                <button class="tab-btn" data-sports-tab="barcelona-last"
+                    onclick="switchSportsTab('barcelona','last')">Últimos</button>
+            </div>
+            <div id="sports-barcelona-content">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+            <div class="sports-news-section">
+                <div class="sports-news-title">📰 Últimas noticias</div>
+                <div id="sports-barcelona-news">
+                    <div class="loading-skeleton">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Alianza Lima (Comprobado) ── -->
+        <div class="widget widget-sports widget-sports-alianza" data-widget="sports-alianza" id="widget-sports-alianza">
+            <div class="widget-header">
+                <span class="widget-icon">⚪🔵</span>
+                <span class="widget-title">Alianza Lima</span>
+                <span class="widget-badge badge-alianza">Liga 1</span>
+            </div>
+            <div class="p2p-tabs">
+                <button class="tab-btn active" data-sports-tab="alianza-next"
+                    onclick="switchSportsTab('alianza','next')">Próximos</button>
+                <button class="tab-btn" data-sports-tab="alianza-last"
+                    onclick="switchSportsTab('alianza','last')">Últimos</button>
+            </div>
+            <div id="sports-alianza-content">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+            <div class="sports-news-section">
+                <div class="sports-news-title">📰 Últimas noticias</div>
+                <div id="alianza-news-list">
+                    <div class="loading-skeleton">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Calculadora P2P ── -->
+        <div class="widget widget-p2p-calc" data-widget="p2p-calc" id="widget-p2p-calc">
+            <div class="widget-header">
+                <span class="widget-icon">🧢</span>
+                <span class="widget-title">Calculadora P2P</span>
+                <span class="widget-badge"
+                    style="background:rgba(240,185,11,0.1);border-color:rgba(240,185,11,0.3);color:var(--accent-gold);">PEN
+                    ↔ EUR</span>
+            </div>
+
+            <div class="calc2-section">
+                <label class="calc2-label">💰 Tengo en Soles (PEN)</label>
+                <input id="calc2-pen-input" type="number" value="1000" min="0" placeholder="Monto en soles"
+                    oninput="runCalc()" class="calc2-input" />
+            </div>
+
+            <div class="calc2-chain">
+                <div class="calc2-step">
+                    <div class="calc2-step-top">
+                        <span class="calc2-step-label">⇨ PEN → USDT (Binance P2P)</span>
+                        <span class="calc2-rate" id="calc2-rate-pen">Cargando...</span>
+                    </div>
+                    <div class="calc2-step-value" id="calc2-usdt-result">-- USDT</div>
+                </div>
+                <div class="calc2-arrow">↓</div>
+                <div class="calc2-step calc2-step-final">
+                    <div class="calc2-step-top">
+                        <span class="calc2-step-label">⇨ USDT → EUR (Binance P2P)</span>
+                        <span class="calc2-rate" id="calc2-rate-eur">Cargando...</span>
+                    </div>
+                    <div class="calc2-step-value highlight" id="calc2-eur-p2p">--</div>
+                </div>
+            </div>
+
+            <div class="calc2-comparison">
+                <div class="calc2-comp-header">📊 Comparativo (1000 PEN)</div>
+                <div class="calc2-comp-row">
+                    <span class="calc2-comp-label">🔄 Vía P2P Binance</span>
+                    <span class="calc2-comp-value p2p-val" id="calc2-eur-p2p-b">--</span>
+                </div>
+                <div class="calc2-comp-row">
+                    <span class="calc2-comp-label">🌐 Tipo cambio mercado</span>
+                    <span class="calc2-comp-value" id="calc2-eur-direct">--</span>
+                </div>
+                <div class="calc2-diff" id="calc2-diff">Esperando tasas...</div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Bolsa de Valores (CAT & Tech) ── -->
+        <div class="widget widget-stocks" data-widget="stocks" id="widget-stocks">
+            <div class="widget-header">
+                <span class="widget-icon">📈</span>
+                <span class="widget-title">Bolsa de Valores</span>
+                <span class="widget-badge" id="stocks-badge">Yahoo Finance</span>
+            </div>
+            <div id="stocks-content">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── WIDGET: Buscador Financiero (Google Finance) ── -->
+        <div class="widget widget-finance-search" data-widget="finance-search" id="widget-finance-search">
+            <div class="widget-header">
+                <span class="widget-icon">🔍</span>
+                <span class="widget-title">Explorador de Mercado</span>
+                <span class="widget-badge"
+                    style="background:rgba(66, 133, 244, 0.1); color: #4285f4; border-color: rgba(66, 133, 244, 0.3);">Google
+                    Finance</span>
+            </div>
+            <div id="finance-search-content" class="finance-search-body">
+                <div class="loading-skeleton">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── ADD WIDGET CARD ── -->
+        <div class="widget widget-add" id="widget-add" onclick="showAddWidgetModal()">
+            <div class="add-widget-inner">
+                <div class="add-icon">+</div>
+                <div class="add-label">Agregar Widget</div>
+                <div class="add-sub">Personaliza tu dashboard</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ═══════════ ADD WIDGET MODAL ═══════════ -->
+    <div class="modal-overlay" id="modal-overlay" onclick="hideAddWidgetModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Agregar Widget</h2>
+                <button class="modal-close" onclick="hideAddWidgetModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle">Selecciona un widget para agregar a tu dashboard</p>
+                <div class="modal-grid" id="available-widgets-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ SCRIPTS ═══════════ -->
+    <script src="widgets/clock.js"></script>
+    <script src="widgets/weather.js"></script>
+    <script src="widgets/crypto.js"></script>
+    <script src="widgets/binance-p2p.js"></script>
+    <script src="widgets/exchange.js"></script>
+    <script src="widgets/news.js"></script>
+    <script src="widgets/dominance.js"></script>
+    <script src="widgets/sports.js"></script>
+    <script src="widgets/p2p-calc.js"></script>
+    <script src="widgets/stocks.js"></script>
+    <script src="widgets/finance-search.js"></script>
+    <script src="widgets/drag.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

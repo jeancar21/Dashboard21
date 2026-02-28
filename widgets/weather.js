@@ -37,7 +37,7 @@ const WMO_CODES = {
 };
 
 async function fetchWeather() {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_CONFIG.lat}&longitude=${WEATHER_CONFIG.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=${WEATHER_CONFIG.timezone}&forecast_days=1`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_CONFIG.lat}&longitude=${WEATHER_CONFIG.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=${WEATHER_CONFIG.timezone}&forecast_days=7`;
 
     try {
         const res = await fetch(url);
@@ -65,6 +65,95 @@ function renderWeather(data) {
     document.getElementById('weather-wind').textContent = `${Math.round(cur.wind_speed_10m)} km/h`;
     document.getElementById('weather-max').textContent = `${Math.round(day.temperature_2m_max[0])}°C`;
     document.getElementById('weather-min').textContent = `${Math.round(day.temperature_2m_min[0])}°C`;
+
+    renderForecast(day);
+}
+
+function renderForecast(daily) {
+    const forecastContainer = document.getElementById('weather-forecast');
+    if (!forecastContainer) return;
+
+    let html = '';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < daily.time.length; i++) {
+        const dateStr = daily.time[i];
+        const dateObj = new Date(dateStr);
+        dateObj.setHours(0, 0, 0, 0);
+
+        let dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'short' });
+        dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+
+        if (dateObj.getTime() === today.getTime()) {
+            dayName = 'Hoy';
+        }
+
+        const maxTemp = Math.round(daily.temperature_2m_max[i]);
+        const minTemp = Math.round(daily.temperature_2m_min[i]);
+        const code = daily.weather_code[i];
+        const wmo = WMO_CODES[code] || { icon: '🌡' };
+
+        html += `
+            <div class="forecast-day">
+                <div class="forecast-date">${dayName}</div>
+                <div class="forecast-icon">${wmo.icon}</div>
+                <div class="forecast-temp">
+                    <span class="f-max">${maxTemp}°</span>
+                    <span class="f-min">${minTemp}°</span>
+                </div>
+            </div>
+        `;
+    }
+
+    forecastContainer.innerHTML = html;
+}
+
+// Geolocation Feature
+async function requestGeolocation() {
+    const badge = document.getElementById('weather-badge');
+    badge.textContent = 'Ubicando...';
+
+    if (!navigator.geolocation) {
+        alert('Tu navegador no soporta geolocalización.');
+        badge.textContent = 'Live';
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            WEATHER_CONFIG.lat = lat;
+            WEATHER_CONFIG.lon = lon;
+
+            try {
+                // Reverse geocoding to get city name
+                const revUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=es`;
+                const revRes = await fetch(revUrl);
+                if (revRes.ok) {
+                    const revData = await revRes.json();
+                    const city = revData.city || revData.locality || 'Ubicación actual';
+                    const country = revData.countryCode || '';
+                    WEATHER_CONFIG.city = `${city}${country ? ', ' + country : ''}`;
+
+                    const titleEl = document.getElementById('weather-title');
+                    if (titleEl) titleEl.textContent = `Clima — ${WEATHER_CONFIG.city}`;
+                }
+            } catch (e) {
+                console.error('[Weather Geo]', e);
+            }
+
+            fetchWeather();
+        },
+        (error) => {
+            console.error('[Weather Geo] Error:', error);
+            alert('No se pudo obtener tu ubicación. Verifica los permisos.');
+            badge.textContent = 'Live';
+        },
+        { timeout: 10000 }
+    );
 }
 
 function renderWeatherError() {

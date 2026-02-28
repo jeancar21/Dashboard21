@@ -494,6 +494,71 @@ body {
     font-family: var(--font-mono);
 }
 
+.weather-forecast {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.weather-forecast::-webkit-scrollbar {
+    height: 4px;
+}
+
+.weather-forecast::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.forecast-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 52px;
+    padding: 8px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.forecast-day:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+}
+
+.forecast-date {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.forecast-icon {
+    font-size: 20px;
+}
+
+.forecast-temp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    font-family: var(--font-mono);
+}
+
+.f-max {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.f-min {
+    color: var(--text-muted);
+}
+
 /* ═══════════════════════════════════════ CRYPTO WIDGET ══ */
 .widget-crypto {
     background: linear-gradient(135deg, #0a0f0a 0%, #111411 100%);

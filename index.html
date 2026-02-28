@@ -102,7 +102,9 @@
         <div class="widget widget-weather" data-widget="weather" id="widget-weather">
             <div class="widget-header">
                 <span class="widget-icon">🌤</span>
-                <span class="widget-title">Clima — Rubí, Barcelona</span>
+                <span class="widget-title" id="weather-title">Clima — Rubí, Barcelona</span>
+                <button class="btn-icon" onclick="requestGeolocation()" title="Usar mi ubicación actual"
+                    style="margin-left:auto; margin-right:8px; background:var(--bg-glass); border:1px solid var(--border); color:var(--text-primary); border-radius:var(--radius-sm); padding:4px 8px; cursor:pointer; font-size:12px;">📍</button>
                 <span class="widget-badge" id="weather-badge">Cargando...</span>
             </div>
             <div class="weather-content" id="weather-content">
@@ -132,6 +134,9 @@
                         <span class="stat-value" id="weather-min">--°</span>
                     </div>
                 </div>
+            </div>
+            <div class="weather-forecast" id="weather-forecast">
+                <!-- Forecast days will be injected here -->
             </div>
         </div>
 
